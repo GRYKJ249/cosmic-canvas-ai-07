@@ -45,6 +45,23 @@ class Query<T> implements PromiseLike<Result<T>> {
   private payload: Row[] = [];
   private conflict: string[] = [];
   private returnSingle: "none" | "single" | "maybe" = "none";
+  private done = false;
+
+  /**
+   * Writes must land even when the caller never awaits the chain, so they run
+   * on the next microtask once the whole chain (filters included) is built.
+   */
+  private scheduleWrite() {
+    queueMicrotask(() => {
+      if (!this.done) {
+        try {
+          this.run();
+        } catch {
+          /* ignore */
+        }
+      }
+    });
+  }
 
   constructor(private table: string) {}
 
@@ -81,6 +98,7 @@ class Query<T> implements PromiseLike<Result<T>> {
   insert(values: Record<string, unknown> | Record<string, unknown>[]) {
     this.mode = "insert";
     this.payload = (Array.isArray(values) ? values : [values]).map((row) => withDefaults(this.table, row));
+    this.scheduleWrite();
     return this;
   }
 
@@ -88,17 +106,20 @@ class Query<T> implements PromiseLike<Result<T>> {
     this.mode = "upsert";
     this.conflict = (options?.onConflict ?? "id").split(",").map((part) => part.trim());
     this.payload = (Array.isArray(values) ? values : [values]).map((row) => withDefaults(this.table, row));
+    this.scheduleWrite();
     return this;
   }
 
   update(patch: Record<string, unknown>) {
     this.mode = "update";
     this.payload = [patch as Row];
+    this.scheduleWrite();
     return this;
   }
 
   delete() {
     this.mode = "delete";
+    this.scheduleWrite();
     return this;
   }
 
@@ -107,6 +128,7 @@ class Query<T> implements PromiseLike<Result<T>> {
   }
 
   private run(): Result<unknown> {
+    this.done = true;
     let rows = readTable(this.table);
 
     // The local profile row is created on first use so the account page works.
