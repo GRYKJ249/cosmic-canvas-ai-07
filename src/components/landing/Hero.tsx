@@ -1,4 +1,5 @@
-import { ArrowDown, Sparkle } from "lucide-react";
+import { ArrowDown, ArrowRight, Sparkle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import catHero from "@/assets/space-cat-hero.png";
 
 export function Hero() {
