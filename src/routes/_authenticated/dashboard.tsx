@@ -168,7 +168,7 @@ function Dashboard() {
             <ShieldCheck className="h-5 w-5 text-primary" />
             <p className="mt-3 font-semibold">{t("Security center", "مركز الأمان")}</p>
             <p className="text-sm text-muted-foreground">
-              {t("Sign-in history, password rotation and personal API keys.", "سجل الدخول، تغيير كلمة المرور، ومفاتيح API الشخصية.")}
+              {t("Activity history and personal API keys, stored in this browser.", "سجل النشاط ومفاتيح API الشخصية، محفوظة في هذا المتصفح.")}
             </p>
           </Link>
         </div>

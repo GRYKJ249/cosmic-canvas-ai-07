@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -8,7 +8,6 @@ import {
   Copy,
   KeyRound,
   Loader2,
-  LogOut,
   Monitor,
   Plus,
   ShieldCheck,
@@ -24,9 +23,9 @@ export const Route = createFileRoute("/_authenticated/security")({
   head: () => ({
     meta: [
       { title: "Security center — Opera AI" },
-      { name: "description", content: "Review sign-in activity, rotate your password, and manage personal API keys for Opera AI." },
+      { name: "description", content: "Review activity saved in your browser and manage personal API keys for Opera AI." },
       { property: "og:title", content: "Security center — Opera AI" },
-      { property: "og:description", content: "Review sign-in activity, rotate your password, and manage personal API keys." },
+      { property: "og:description", content: "Review activity saved in your browser and manage personal API keys." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -37,11 +36,8 @@ export const Route = createFileRoute("/_authenticated/security")({
 function SecurityPage() {
   const { t, lang } = useLang();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [label, setLabel] = useState("");
   const [freshKey, setFreshKey] = useState<string | null>(null);
 
@@ -70,23 +66,6 @@ function SecurityPage() {
       if (error) throw error;
       return data ?? [];
     },
-  });
-
-  const changePassword = useMutation({
-    mutationFn: async () => {
-      if (password.length < 8) throw new Error(t("Use at least 8 characters.", "استخدم 8 أحرف على الأقل."));
-      if (password !== confirm) throw new Error(t("The two passwords do not match.", "كلمتا المرور غير متطابقتين."));
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
-      if (user) await logAuthEvent(user.id, "password_changed");
-    },
-    onSuccess: async () => {
-      setPassword("");
-      setConfirm("");
-      toast.success(t("Password updated.", "تم تحديث كلمة المرور."));
-      await queryClient.invalidateQueries({ queryKey: ["auth-events", user?.id] });
-    },
-    onError: (error: Error) => toast.error(error.message),
   });
 
   const createKey = useMutation({
@@ -126,13 +105,6 @@ function SecurityPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const signOutEverywhere = async () => {
-    if (user) await logAuthEvent(user.id, "sign_out_all");
-    await supabase.auth.signOut({ scope: "global" });
-    queryClient.clear();
-    navigate({ to: "/auth", replace: true });
-  };
-
   const eventLabel = (event: string) =>
     ({
       sign_in: t("Signed in", "تسجيل دخول"),
@@ -156,45 +128,10 @@ function SecurityPage() {
           <div>
             <h1 className="font-display text-2xl font-bold">{t("Security center", "مركز الأمان")}</h1>
             <p className="text-sm text-muted-foreground">
-              {t("Sign-in history, password and personal API keys.", "سجل الدخول، كلمة المرور، ومفاتيح API الشخصية.")}
+              {t("Activity history and personal API keys, stored in this browser.", "سجل النشاط ومفاتيح API الشخصية، محفوظة في هذا المتصفح.")}
             </p>
           </div>
         </header>
-
-        <section className="glass-strong mt-8 rounded-3xl p-6">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-primary" />
-            <h2 className="font-display font-bold">{t("Password", "كلمة المرور")}</h2>
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete="new-password"
-              placeholder={t("New password", "كلمة مرور جديدة")}
-              className="w-full rounded-xl border border-glass-border bg-background/40 px-3.5 py-3 text-sm outline-none focus:border-primary/60"
-            />
-            <input
-              type="password"
-              value={confirm}
-              onChange={(event) => setConfirm(event.target.value)}
-              autoComplete="new-password"
-              placeholder={t("Confirm password", "تأكيد كلمة المرور")}
-              className="w-full rounded-xl border border-glass-border bg-background/40 px-3.5 py-3 text-sm outline-none focus:border-primary/60"
-            />
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button type="button" disabled={changePassword.isPending} onClick={() => changePassword.mutate()}>
-              {changePassword.isPending ? <Loader2 className="animate-spin" /> : <Check />}
-              {t("Update password", "تحديث كلمة المرور")}
-            </Button>
-            <Button type="button" variant="outline" onClick={() => void signOutEverywhere()}>
-              <LogOut />
-              {t("Sign out of all devices", "خروج من كل الأجهزة")}
-            </Button>
-          </div>
-        </section>
 
         <section className="glass-strong mt-6 rounded-3xl p-6">
           <div className="flex items-center gap-2">
