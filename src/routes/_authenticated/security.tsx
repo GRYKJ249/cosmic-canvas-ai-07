@@ -182,7 +182,7 @@ function SecurityPage() {
             ) : (keys.data ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">{t("No keys yet.", "لا توجد مفاتيح بعد.")}</p>
             ) : (
-              (keys.data ?? []).map((item) => (
+              (keys.data ?? []).map((item: any) => (
                 <div key={item.id} className="glass flex flex-wrap items-center gap-3 rounded-xl p-3">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{item.label}</p>
@@ -213,7 +213,7 @@ function SecurityPage() {
             ) : (events.data ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">{t("Nothing recorded yet.", "لا يوجد نشاط مسجّل بعد.")}</p>
             ) : (
-              (events.data ?? []).map((item) => (
+              (events.data ?? []).map((item: any) => (
                 <div key={item.id} className="glass flex flex-wrap items-center justify-between gap-2 rounded-xl p-3 text-sm">
                   <div className="min-w-0">
                     <p className="font-semibold">{eventLabel(item.event)}</p>

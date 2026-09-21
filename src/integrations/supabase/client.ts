@@ -224,14 +224,14 @@ function storageBucket(bucket: string) {
     },
     async createSignedUrl(path: string, _expiresIn?: number) {
       const dataUrl = await getFile(key(path));
-      return { data: dataUrl ? { signedUrl: dataUrl } : null, error: null };
+      return { data: dataUrl ? { signedUrl: dataUrl } : null, error: null as { message: string } | null };
     },
     getPublicUrl(path: string) {
       return { data: { publicUrl: key(path) } };
     },
     async remove(paths: string[]) {
       await removeFiles(paths.map(key));
-      return { data: null, error: null };
+      return { data: null, error: null as { message: string } | null };
     },
   };
 }

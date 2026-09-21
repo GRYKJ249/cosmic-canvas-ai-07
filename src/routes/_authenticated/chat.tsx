@@ -97,7 +97,7 @@ function ChatLayout() {
         </div>
 
         <nav className="mt-4 flex-1 space-y-1 overflow-y-auto px-3 pb-4">
-          {(threads ?? []).map((thread) => (
+          {(threads ?? []).map((thread: any) => (
             <div
               key={thread.id}
               className={`group flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition ${
