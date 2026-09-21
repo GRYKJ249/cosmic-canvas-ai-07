@@ -1,8 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BadgeCheck, Code2, Cpu, ImageIcon, Loader2, LogOut, Save, ShieldCheck, Sparkles } from "lucide-react";
+import { BadgeCheck, Code2, Cpu, ImageIcon, Loader2, Save, ShieldCheck, Sparkles } from "lucide-react";
 import catAvatar from "@/assets/space-cat-avatar.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,7 +25,6 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function Dashboard() {
   const { t, lang, setLang } = useLang();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
@@ -68,13 +67,6 @@ function Dashboard() {
     void queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
   };
 
-  const signOut = async () => {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  };
-
   const verified = !!user?.email_confirmed_at;
 
   return (
@@ -90,10 +82,6 @@ function Dashboard() {
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="btn-ghost !px-3 !py-2 text-xs">
               {lang === "ar" ? "English" : "العربية"}
-            </button>
-            <button type="button" onClick={signOut} className="btn-ghost !px-3 !py-2 text-xs">
-              <LogOut className="h-4 w-4" />
-              {t("Sign out", "خروج")}
             </button>
           </div>
         </header>

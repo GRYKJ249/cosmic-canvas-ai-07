@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Contrast, ImageIcon, LayoutDashboard, LogIn, Palette, Volume2, VolumeX, Code2 } from "lucide-react";
+import { Contrast, ImageIcon, LayoutDashboard, Palette, Volume2, VolumeX, Code2 } from "lucide-react";
 import catAvatar from "@/assets/space-cat-avatar.png";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { useSound } from "@/hooks/use-sound";
-import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 
 const links = [
@@ -19,7 +18,6 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const { highContrast, setHighContrast } = useTheme();
   const { enabled, setEnabled, click } = useSound();
-  const { session } = useAuth();
   const { lang, setLang, t } = useLang();
 
   useEffect(() => {
