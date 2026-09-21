@@ -88,27 +88,18 @@ export function Nav() {
             <Palette className="h-4 w-4" />
             <span className="hidden sm:inline">100 Themes</span>
           </a>
-          {session ? (
-            <>
-              <Link to="/code" onClick={click} className="btn-ghost !px-3 !py-2 text-xs md:!px-4">
-                <Code2 className="h-4 w-4" />
-                <span className="hidden lg:inline">{t("Code", "الأكواد")}</span>
-              </Link>
-              <Link to="/studio" onClick={click} className="btn-ghost !px-3 !py-2 text-xs md:!px-4">
-                <ImageIcon className="h-4 w-4" />
-                <span className="hidden lg:inline">{t("Studio", "الاستوديو")}</span>
-              </Link>
-              <Link to="/dashboard" onClick={click} className="btn-hero !px-3 !py-2 text-xs md:!px-4">
-                <LayoutDashboard className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("Account", "حسابي")}</span>
-              </Link>
-            </>
-          ) : (
-            <Link to="/auth" onClick={click} className="btn-hero !px-3 !py-2 text-xs md:!px-4">
-              <LogIn className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("Sign in", "دخول")}</span>
-            </Link>
-          )}
+          <Link to="/code" onClick={click} className="btn-ghost !px-3 !py-2 text-xs md:!px-4">
+            <Code2 className="h-4 w-4" />
+            <span className="hidden lg:inline">{t("Code", "الأكواد")}</span>
+          </Link>
+          <Link to="/studio" onClick={click} className="btn-ghost !px-3 !py-2 text-xs md:!px-4">
+            <ImageIcon className="h-4 w-4" />
+            <span className="hidden lg:inline">{t("Studio", "الاستوديو")}</span>
+          </Link>
+          <Link to="/chat" onClick={click} className="btn-hero !px-3 !py-2 text-xs md:!px-4">
+            <LayoutDashboard className="h-4 w-4" />
+            <span className="hidden sm:inline">Start</span>
+          </Link>
         </div>
       </nav>
     </header>
