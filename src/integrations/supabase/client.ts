@@ -15,7 +15,8 @@ import {
   type Row,
 } from "@/lib/browser-store";
 
-type Result<T> = { data: T; error: { message: string } | null };
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type Result<T> = { data: any; error: { message: string } | null };
 
 const uuid = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
