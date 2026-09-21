@@ -20,7 +20,11 @@ export function Hero() {
             multi-modal creation studio — one platform, one hundred moods.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-            <a href="#sandbox" className="btn-hero">
+            <Link to="/chat" className="btn-hero">
+              Start
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a href="#sandbox" className="btn-ghost">
               Try the AI sandbox
             </a>
             <a href="#platform" className="btn-ghost">
