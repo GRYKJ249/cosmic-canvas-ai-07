@@ -1,42 +1,25 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { createContext, useContext, type ReactNode } from "react";
+import { localUser } from "@/lib/browser-store";
+
+type LocalUser = ReturnType<typeof localUser>;
 
 type AuthContextValue = {
-  session: Session | null;
-  user: User | null;
+  session: { user: LocalUser } | null;
+  user: LocalUser | null;
   loading: boolean;
 };
 
-const AuthContext = createContext<AuthContextValue>({
-  session: null,
-  user: null,
-  loading: true,
-});
+const value: AuthContextValue = {
+  session: { user: localUser() },
+  user: localUser(),
+  loading: false,
+};
 
+const AuthContext = createContext<AuthContextValue>(value);
+
+/** No sign-in anymore: everyone uses the app directly, data stays in the browser. */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
-      setSession(next);
-      setLoading(false);
-    });
-
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
-
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
