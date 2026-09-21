@@ -106,7 +106,21 @@ class Query<T> implements PromiseLike<Result<T>> {
   }
 
   private run(): Result<unknown> {
-    const rows = readTable(this.table);
+    let rows = readTable(this.table);
+
+    // The local profile row is created on first use so the account page works.
+    if (this.table === "profiles" && rows.length === 0) {
+      rows = [
+        withDefaults("profiles", {
+          id: localUser().id,
+          username: "",
+          display_name: "",
+          avatar_url: null,
+          tokens_used: 0,
+        }),
+      ];
+      writeTable("profiles", rows);
+    }
 
     if (this.mode === "insert" || this.mode === "upsert") {
       let next = rows;
